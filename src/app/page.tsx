@@ -1,14 +1,43 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button"
-
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold">☕ Smart Coffee Hub</h1>
-        <p className="text-gray-600">Your daily dose of coffee and tech</p>
-        <Button size="lg">Order Coffee</Button>
+    <main style={{ 
+      display: 'flex', 
+      minHeight: '100vh', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      backgroundColor: '#f9fafb',
+      padding: '2rem'
+    }}>
+      <div style={{ textAlign: 'center' }}>
+        <h1 style={{ 
+          fontSize: '2rem', 
+          fontWeight: 'bold', 
+          marginBottom: '1rem',
+          color: '#1f2937'
+        }}>
+          ☕ Smart Coffee Hub
+        </h1>
+        <p style={{ 
+          color: '#6b7280', 
+          marginBottom: '2rem',
+          fontSize: '1.1rem'
+        }}>
+          Your daily dose of coffee and tech
+        </p>
+        <button style={{
+          backgroundColor: '#1f2937',
+          color: 'white',
+          padding: '0.75rem 1.5rem',
+          borderRadius: '0.5rem',
+          border: 'none',
+          fontSize: '1rem',
+          cursor: 'pointer',
+          fontWeight: '500'
+        }}>
+          Order Coffee
+        </button>
       </div>
     </main>
   )
