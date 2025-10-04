@@ -1,15 +1,19 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { documentToPlainTextString } from "@contentful/rich-text-plain-text-renderer"
+import { Document } from "@contentful/rich-text-types"
 
 type Product = {
   name: string
   slug: string
-  price: number
   category: string
-  description: string
+  description: {
+    json: Document
+  }
   image?: { url: string }
 }
 
@@ -40,18 +44,25 @@ export default function ProductList({ products }: { products: Product[] }) {
         {filtered.map((product) => (
           <Card key={product.slug} className="hover:shadow-lg transition">
             {product.image && (
-              <img
-                src={product.image.url}
-                alt={product.name}
-                className="w-full h-48 object-cover rounded-t-lg"
-              />
+              <div className="relative w-full h-48">
+                <Image
+                  src={product.image.url}
+                  alt={product.name}
+                  fill
+                  className="object-cover rounded-t-lg"
+                />
+              </div>
             )}
             <CardHeader>
               <CardTitle>{product.name}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">{product.description}</p>
-              <p className="mt-2 font-bold">${product.price}</p>
+              <p className="text-sm text-gray-500 mb-2">{product.category}</p>
+              <p className="text-gray-600 line-clamp-3">
+                {product.description?.json 
+                  ? documentToPlainTextString(product.description.json).substring(0, 150) + '...'
+                  : 'No description available'}
+              </p>
             </CardContent>
           </Card>
         ))}

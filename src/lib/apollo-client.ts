@@ -10,6 +10,11 @@ const httpLink = new HttpLink({
 const client = new ApolloClient({
   link: httpLink,
   cache: new InMemoryCache(),
+  defaultOptions: {
+    query: {
+      errorPolicy: 'all', // Return partial data even if there are errors
+    },
+  },
 });
 
 export default client;

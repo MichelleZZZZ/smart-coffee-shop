@@ -1,30 +1,20 @@
-import client from "@/lib/apollo-client";
-import { gql } from "@apollo/client";
+import Link from "next/link";
 
-export default async function BlogPage() {
-  const { data } = await client.query({
-    query: gql`
-      query GetCoffeeProducts {
-        coffeeProductCollection {
-          items {
-            name
-            slug
-          }
-        }
-      }
-    `,
-  });
-
+export default function HomePage() {
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Blog</h1>
-      <ul className="space-y-2">
-        {data.coffeeProductCollection.items.map((post: any) => (
-          <li key={post.slug} className="text-blue-600">
-            {post.name}
-          </li>
-        ))}
-      </ul>
+    <main className="min-h-screen flex flex-col items-center justify-center p-8">
+      <div className="text-center">
+        <h1 className="text-5xl font-bold mb-6">Welcome to Smart Coffee Hub</h1>
+        <p className="text-xl text-gray-600 mb-8">
+          Discover our curated collection of premium coffee products
+        </p>
+        <Link 
+          href="/products" 
+          className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
+        >
+          Browse Products
+        </Link>
+      </div>
     </main>
   );
 }
