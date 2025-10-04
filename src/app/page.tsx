@@ -9,6 +9,7 @@ export default async function BlogPage() {
           items {
             title
             slug
+            publishDate
           }
         }
       }
@@ -21,7 +22,7 @@ export default async function BlogPage() {
       <ul className="space-y-2">
         {data.blogPostCollection.items.map((post: any) => (
           <li key={post.slug} className="text-blue-600">
-            {post.title}
+            {post.title} {post.publishDate}
           </li>
         ))}
       </ul>
