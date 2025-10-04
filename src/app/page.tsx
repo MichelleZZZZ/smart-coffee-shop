@@ -4,12 +4,11 @@ import { gql } from "@apollo/client";
 export default async function BlogPage() {
   const { data } = await client.query({
     query: gql`
-      query GetBlogPosts {
-        blogPostCollection {
+      query GetCoffeeProducts {
+        coffeeProductCollection {
           items {
-            title
+            name
             slug
-            publishDate
           }
         }
       }
@@ -20,9 +19,9 @@ export default async function BlogPage() {
     <main className="p-8">
       <h1 className="text-2xl font-bold mb-4">Blog</h1>
       <ul className="space-y-2">
-        {data.blogPostCollection.items.map((post: any) => (
+        {data.coffeeProductCollection.items.map((post: any) => (
           <li key={post.slug} className="text-blue-600">
-            {post.title} {post.publishDate}
+            {post.name}
           </li>
         ))}
       </ul>
