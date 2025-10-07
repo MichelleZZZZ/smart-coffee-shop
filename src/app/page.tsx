@@ -2,27 +2,78 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="text-center">
-        <h1 className="text-5xl font-bold mb-6">Welcome to Smart Coffee Hub</h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Discover our curated collection of premium coffee products
-        </p>
-        <Link 
-          href="/products" 
-          className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
-        >
-          Browse Products
-        </Link>
+    <div className="min-h-screen">
+      {/* Hero Banner */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <div className="w-full h-full bg-gradient-to-br from-amber-900 via-amber-800 to-amber-700">
+            <div className="absolute inset-0 bg-black/30"></div>
+          </div>
+        </div>
+        
+        {/* Hero Content */}
+        <div className="relative z-10 text-center text-white px-8 max-w-4xl mx-auto">
+          <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+            Smart Coffee Hub
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 text-amber-100 max-w-2xl mx-auto">
+            Discover the perfect blend of premium coffee products and expert brewing techniques
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link 
+              href="/products" 
+              className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Browse Products
+            </Link>
+            <Link 
+              href="/blog" 
+              className="border-2 border-white text-white hover:bg-white hover:text-amber-900 px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300"
+            >
+              Read Our Blog
+            </Link>
+          </div>
+        </div>
+      </section>
 
-        <Link 
-          href="/blog" 
-          className="inne-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
-        >
-          Browse Blog
-        </Link>
-
-      </div>
-    </main>
+      {/* Features Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-8">
+          <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
+            Why Choose Smart Coffee Hub?
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">☕</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Premium Quality</h3>
+              <p className="text-gray-600">
+                Curated selection of the finest coffee beans and brewing equipment from around the world.
+              </p>
+            </div>
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">🎯</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Expert Guidance</h3>
+              <p className="text-gray-600">
+                Learn from our coffee experts with detailed guides and brewing techniques.
+              </p>
+            </div>
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">🚀</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Smart Solutions</h3>
+              <p className="text-gray-600">
+                Discover innovative coffee products that enhance your brewing experience.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
