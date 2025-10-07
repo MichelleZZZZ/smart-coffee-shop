@@ -12,6 +12,7 @@ const GET_POSTS = gql`
         slug
         publishDate
         excerpt
+        author
         coverImage {
           url
         }
@@ -24,6 +25,7 @@ type BlogPost = {
   title: string
   slug: string
   publishDate: string
+  author?: string
   excerpt?: string
   coverImage?: {
     url: string
@@ -88,7 +90,7 @@ export default async function BlogPage() {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'
-                        })}
+                        })} {post.author}
                       </p>
                       {post.excerpt && (
                         <p className="text-gray-600 line-clamp-3">
