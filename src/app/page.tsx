@@ -1,24 +1,68 @@
 import Link from "next/link";
+import { gql } from "@apollo/client";
+import client from "@/lib/apollo-client";
+import Image from "next/image";
 
-export default function HomePage() {
+const GET_HOME = gql`
+  query {
+    smartCoffeeShopHomePageCollection(limit: 1) {
+      items {
+        heroImage {
+          url
+        }
+        title
+        subtitle
+        
+      }
+    }
+  }
+`
+
+type HomePageData = {
+  heroImage?: {
+    url: string
+  }
+  title: string
+  subtitle: string
+}
+
+type QueryResponse = {
+  smartCoffeeShopHomePageCollection: {
+    items: HomePageData[]
+  }
+}
+
+export default async function HomePage() {
+  const result = await client.query<QueryResponse>({ query: GET_HOME })
+  const homeData = result.data?.smartCoffeeShopHomePageCollection?.items[0]
+
   return (
     <div className="min-h-screen">
       {/* Hero Banner */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <div className="w-full h-full bg-gradient-to-br from-amber-900 via-amber-800 to-amber-700">
-            <div className="absolute inset-0 bg-black/30"></div>
-          </div>
+          {homeData?.heroImage ? (
+            <Image
+              src={homeData.heroImage.url}
+              alt="Coffee hero image"
+              fill
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-amber-900 via-amber-800 to-amber-700"></div>
+          )}
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
         
         {/* Hero Content */}
         <div className="relative z-10 text-center text-white px-8 max-w-4xl mx-auto">
           <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
-            Smart Coffee Hub
+            {homeData?.title || "Smart Coffee Hub"}
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-amber-100 max-w-2xl mx-auto">
-            Discover the perfect blend of premium coffee products and expert brewing techniques
+            {homeData?.subtitle || "Discover the perfect blend of premium coffee products and expert brewing techniques"}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
