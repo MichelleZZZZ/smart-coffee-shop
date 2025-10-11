@@ -2,6 +2,7 @@ import Link from "next/link";
 import { gql } from "@apollo/client";
 import client from "@/lib/apollo-client";
 import Image from "next/image";
+import { Document } from "@contentful/rich-text-types";
 
 const GET_HOME = gql`
   query {
@@ -12,7 +13,19 @@ const GET_HOME = gql`
         }
         title
         subtitle
-        
+        callToActionsCollection {
+          items {
+            title
+            icon {
+              url
+              title
+            }
+            content {
+              json
+            }
+            
+          }
+        }
       }
     }
   }
@@ -24,6 +37,23 @@ type HomePageData = {
   }
   title: string
   subtitle: string
+  callToActionsCollection: {
+    items: CallToAction[]
+  }
+}
+
+type CallToAction = {
+  title?: string
+  icon?: {
+    url: string
+    title?: string
+  }
+  content?: {
+    json: Document
+  }
+  link?: {
+    url?: string
+  }
 }
 
 type QueryResponse = {
@@ -39,10 +69,30 @@ function isVideoFile(url: string): boolean {
   return videoExtensions.some(ext => lowerUrl.includes(ext))
 }
 
+// Helper function to render RichText content
+function renderRichTextContent(content: Document): string {
+  if (!content || !content.content) return ''
+  
+  try {
+    return content.content
+      .map((node) => {
+        if (node.nodeType === 'paragraph' && 'content' in node) {
+          const paragraphNode = node as { content?: Array<{ value?: string }> }
+          return paragraphNode.content?.map((textNode) => textNode.value || '').join('') || ''
+        }
+        return ''
+      })
+      .join(' ')
+      .trim()
+  } catch (error) {
+    console.error('Error rendering RichText content:', error)
+    return 'Content unavailable'
+  }
+}
+
 export default async function HomePage() {
   const result = await client.query<QueryResponse>({ query: GET_HOME })
   const homeData = result.data?.smartCoffeeShopHomePageCollection?.items[0]
-  console.log(homeData)
 
   return (
     <div className="min-h-screen">
@@ -55,7 +105,7 @@ export default async function HomePage() {
               <video
                 autoPlay
                 muted
-                loop
+                loop={false}
                 playsInline
                 className="w-full h-full object-cover animate-fade-in"
               >
@@ -102,43 +152,47 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-8">
-          <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
-            Why Choose Smart Coffee Shop?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">☕</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Premium Quality</h3>
-              <p className="text-gray-600">
-                Curated selection of the finest coffee beans and brewing equipment from around the world.
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🎯</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Expert Guidance</h3>
-              <p className="text-gray-600">
-                Learn from our coffee experts with detailed guides and brewing techniques.
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🚀</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Smart Solutions</h3>
-              <p className="text-gray-600">
-                Discover innovative coffee products that enhance your brewing experience.
-              </p>
+      {/* Call to Actions Section */}
+      {homeData?.callToActionsCollection?.items && homeData.callToActionsCollection.items.length > 0 && (
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-8">
+            <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
+              Why Choose Smart Coffee Shop?
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {homeData.callToActionsCollection.items.map((cta, index) => (
+                <div key={index} className="text-center p-6">
+                  <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    {cta.icon?.url ? (
+                      <Image
+                        src={cta.icon.url}
+                        alt={cta.title || 'Icon'}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8"
+                      />
+                    ) : (
+                      <span className="text-2xl">☕</span>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">{cta.title || 'Call to Action'}</h3>
+                  <p className="text-gray-600 mb-4">
+                    {cta.content?.json ? renderRichTextContent(cta.content.json) : 'No content available'}
+                  </p>
+                  {cta.link?.url && (
+                    <Link 
+                      href={cta.link.url}
+                      className="inline-block bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
+                    >
+                      Learn More
+                    </Link>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
