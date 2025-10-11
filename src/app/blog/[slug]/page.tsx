@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!post) {
     return {
       title: "Post not found | Smart Coffee Shop Blog",
-      description: "The blog post you're looking for doesn't exist.",
+      description: "The blog post you're looking for doesn't exist",
     }
   }
 
