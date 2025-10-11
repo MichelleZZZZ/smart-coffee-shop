@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { getCoffeeShopContext } from '@/lib/coffee-shop-content'
 import ReactMarkdown from 'react-markdown'
 
 export default function ChatPage() {
@@ -105,7 +104,7 @@ export default function ChatPage() {
               <div className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2">
                 {messages.length === 0 ? (
                   <div className="text-center text-gray-500 py-8">
-                    <p>👋 Hi! I'm your coffee assistant. Ask me anything!</p>
+                    <p>👋 Hi! I&apos;m your coffee assistant. Ask me anything!</p>
                     <p className="text-sm mt-2">Try asking about our menu, hours, or coffee recommendations.</p>
                   </div>
                 ) : (
@@ -179,7 +178,7 @@ export default function ChatPage() {
                   disabled={loading}
                 />
                 <Button
-                  onClick={askAI}
+                  onClick={() => askAI()}
                   disabled={loading || !message.trim()}
                   className="bg-amber-600 hover:bg-amber-700"
                 >

@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { getCoffeeShopContext } from '@/lib/coffee-shop-content'
 import { findContentMatch, extractContentInfo } from '@/lib/content-matcher'
+import type { Product, BlogPost } from '@/lib/types'
 
 export async function POST(req: Request) {
   try {
@@ -44,7 +45,7 @@ ${coffeeShopContext}`
 
     // Add specific content if we found a match
     if (contentMatch.type === 'product' && contentMatch.item) {
-      const product = contentMatch.item as any
+      const product = contentMatch.item as Product
       const productInfo = extractContentInfo(product.description)
       prompt += `
 
@@ -56,7 +57,7 @@ SPECIFIC PRODUCT INFORMATION:
 
 The customer's question seems to be about this specific product. Please provide detailed information about this product and suggest they can learn more by visiting the product page.`
     } else if (contentMatch.type === 'blog' && contentMatch.item) {
-      const blogPost = contentMatch.item as any
+      const blogPost = contentMatch.item as BlogPost
       const blogContent = extractContentInfo(blogPost.body)
       prompt += `
 

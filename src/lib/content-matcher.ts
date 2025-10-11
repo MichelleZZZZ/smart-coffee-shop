@@ -1,5 +1,14 @@
 import { gql } from "@apollo/client"
 import client from "@/lib/apollo-client"
+import type { 
+  Product, 
+  BlogPost, 
+  ProductsResponse, 
+  BlogPostsResponse, 
+  ContentMatch,
+  RichTextContent,
+  RichTextNode
+} from "./types"
 
 // GraphQL queries for content matching
 const GET_PRODUCTS = gql`
@@ -34,41 +43,14 @@ const GET_BLOG_POSTS = gql`
   }
 `
 
-type Product = {
-  name: string
-  slug: string
-  category: string
-  description: {
-    json: any
-  }
-}
-
-type BlogPost = {
-  title: string
-  slug: string
-  excerpt?: string
-  body: {
-    json: any
-  }
-  category?: string
-  tags?: string[]
-}
-
-type ContentMatch = {
-  type: 'product' | 'blog' | 'none'
-  item?: Product | BlogPost
-  confidence: number
-  matchedTerms: string[]
-}
-
 export async function findContentMatch(userMessage: string): Promise<ContentMatch> {
   const lowerMessage = userMessage.toLowerCase()
   
   try {
     // Get all products and blog posts
     const [productsResult, blogResult] = await Promise.all([
-      client.query({ query: GET_PRODUCTS }),
-      client.query({ query: GET_BLOG_POSTS })
+      client.query<ProductsResponse>({ query: GET_PRODUCTS }),
+      client.query<BlogPostsResponse>({ query: GET_BLOG_POSTS })
     ])
 
     const products: Product[] = productsResult.data?.coffeeProductCollection?.items || []
@@ -261,18 +243,18 @@ function findBlogMatch(message: string, blogPosts: BlogPost[]): ContentMatch {
 }
 
 // Helper function to extract key information from content
-export function extractContentInfo(content: any): string {
+export function extractContentInfo(content: RichTextContent | string | null | undefined): string {
   if (!content) return ''
   
   // For rich text content, extract plain text
-  if (content.json) {
+  if (typeof content === 'object' && 'json' in content) {
     return extractTextFromRichText(content.json)
   }
   
   return String(content)
 }
 
-function extractTextFromRichText(json: any): string {
+function extractTextFromRichText(json: { content: RichTextNode[] }): string {
   if (!json || !json.content) return ''
   
   let text = ''
@@ -280,7 +262,7 @@ function extractTextFromRichText(json: any): string {
   for (const node of json.content) {
     if (node.nodeType === 'paragraph' && node.content) {
       for (const textNode of node.content) {
-        if (textNode.nodeType === 'text') {
+        if (textNode.nodeType === 'text' && textNode.value) {
           text += textNode.value + ' '
         }
       }
