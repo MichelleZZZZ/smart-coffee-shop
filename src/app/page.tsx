@@ -32,24 +32,45 @@ type QueryResponse = {
   }
 }
 
+// Helper function to check if URL is a video file
+function isVideoFile(url: string): boolean {
+  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv']
+  const lowerUrl = url.toLowerCase()
+  return videoExtensions.some(ext => lowerUrl.includes(ext))
+}
+
 export default async function HomePage() {
   const result = await client.query<QueryResponse>({ query: GET_HOME })
   const homeData = result.data?.smartCoffeeShopHomePageCollection?.items[0]
+  console.log(homeData)
 
   return (
     <div className="min-h-screen">
       {/* Hero Banner */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
+        {/* Background Media */}
         <div className="absolute inset-0 z-0">
           {homeData?.heroImage ? (
-            <Image
-              src={homeData.heroImage.url}
-              alt="Coffee hero image"
-              fill
-              className="object-cover"
-              priority
-            />
+            isVideoFile(homeData.heroImage.url) ? (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover animate-fade-in"
+              >
+                <source src={homeData.heroImage.url} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <Image
+                src={homeData.heroImage.url}
+                alt="Coffee hero image"
+                fill
+                className="object-cover"
+                priority
+              />
+            )
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-amber-900 via-amber-800 to-amber-700"></div>
           )}
