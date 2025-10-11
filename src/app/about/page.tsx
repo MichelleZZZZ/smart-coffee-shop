@@ -60,7 +60,7 @@ export default async function AboutPage() {
         <div className="max-w-4xl mx-auto px-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              {aboutPageData?.title || "About Smart Coffee Hub"}
+              {aboutPageData?.title || "About Smart Coffee Shop"}
             </h1>
           </div>
           

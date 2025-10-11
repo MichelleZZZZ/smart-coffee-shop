@@ -1,5 +1,5 @@
 export const coffeeShopContent = `
-# Smart Coffee Hub - Complete Information
+# Smart Coffee Shop - Complete Information
 
 ## Store Hours
 - **Monday - Friday**: 7:00 AM - 7:00 PM
@@ -113,7 +113,7 @@ export const coffeeShopContent = `
 - **High Chairs**: Available for children
 - **Restrooms**: Accessible facilities available
 
-## About Smart Coffee Hub
+## About Smart Coffee Shop
 
 We are passionate about bringing you the finest coffee experience. Our beans are ethically sourced from sustainable farms around the world, and we roast them fresh daily in small batches to ensure maximum flavor and quality.
 
@@ -128,7 +128,7 @@ To create a welcoming community space where coffee lovers can enjoy exceptional 
 - **Innovation**: Always exploring new flavors and techniques
 
 ### Our Story
-Founded in 2020 by coffee enthusiasts who wanted to create more than just a coffee shop, Smart Coffee Hub has become a community gathering place where people come not just for great coffee, but for the experience, the knowledge, and the connections they make here.
+Founded in 2020 by coffee enthusiasts who wanted to create more than just a coffee shop, Smart Coffee Shop has become a community gathering place where people come not just for great coffee, but for the experience, the knowledge, and the connections they make here.
 `;
 
 export const getCoffeeShopContext = () => {

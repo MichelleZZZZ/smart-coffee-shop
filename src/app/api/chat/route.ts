@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       }
     })
     
-    let prompt = `You are a friendly and knowledgeable coffee shop assistant for "Smart Coffee Hub". 
+    let prompt = `You are a friendly and knowledgeable coffee shop assistant for "Smart Coffee Shop". 
 
 Use the following information about our coffee shop to answer customer questions accurately and helpfully:
 

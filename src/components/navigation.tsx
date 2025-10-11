@@ -17,7 +17,7 @@ export default function Navigation() {
       <div className="max-w-6xl mx-auto px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="text-2xl font-bold text-amber-600">
-            Smart Coffee Hub
+            Smart Coffee Shop
           </Link>
           
           <div className="flex space-x-8">

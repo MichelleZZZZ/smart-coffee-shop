@@ -1,4 +1,4 @@
-// Type definitions for the Smart Coffee Hub application
+// Type definitions for the Smart Coffee Shop application
 
 // Rich text content structure from Contentful
 export interface RichTextNode {

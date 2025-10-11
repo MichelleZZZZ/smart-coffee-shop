@@ -56,13 +56,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   if (!post) {
     return {
-      title: "Post not found | Smart Coffee Hub Blog",
+      title: "Post not found | Smart Coffee Shop Blog",
       description: "The blog post you're looking for doesn't exist.",
     }
   }
 
   return {
-    title: `${post.title} | Smart Coffee Hub Blog`,
+    title: `${post.title} | Smart Coffee Shop Blog`,
     description: post.excerpt || "Read this story on our coffee journey.",
     openGraph: {
       title: post.title,

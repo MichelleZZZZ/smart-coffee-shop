@@ -80,7 +80,7 @@ export default async function HomePage() {
         {/* Hero Content */}
         <div className="relative z-10 text-center text-white px-8 max-w-4xl mx-auto">
           <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
-            {homeData?.title || "Smart Coffee Hub"}
+            {homeData?.title || "Smart Coffee Shop"}
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-amber-100 max-w-2xl mx-auto">
             {homeData?.subtitle || "Discover the perfect blend of premium coffee products and expert brewing techniques"}
@@ -106,7 +106,7 @@ export default async function HomePage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
           <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
-            Why Choose Smart Coffee Hub?
+            Why Choose Smart Coffee Shop?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-6">
