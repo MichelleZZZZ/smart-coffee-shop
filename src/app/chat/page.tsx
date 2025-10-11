@@ -24,17 +24,20 @@ export default function ChatPage() {
     const messageToSend = customMessage || message.trim()
     if (!messageToSend) return
 
+    // Ensure we only send plain text strings
+    const cleanMessage = typeof messageToSend === 'string' ? messageToSend : String(messageToSend)
+    
     setMessage('')
     setLoading(true)
     
     // Add user message to chat
-    setMessages(prev => [...prev, { type: 'user', content: messageToSend }])
+    setMessages(prev => [...prev, { type: 'user', content: cleanMessage }])
 
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: messageToSend })
+        body: JSON.stringify({ message: cleanMessage })
       })
 
       if (!response.ok) {
@@ -56,11 +59,15 @@ export default function ChatPage() {
   }
 
   const handleQuickQuestion = (question: string, answer: string) => {
+    // Ensure we only work with plain strings
+    const cleanQuestion = typeof question === 'string' ? question : String(question)
+    const cleanAnswer = typeof answer === 'string' ? answer : String(answer)
+    
     // Add user message to chat
-    setMessages(prev => [...prev, { type: 'user', content: question }])
+    setMessages(prev => [...prev, { type: 'user', content: cleanQuestion }])
     
     // Add predefined answer immediately
-    setMessages(prev => [...prev, { type: 'assistant', content: answer }])
+    setMessages(prev => [...prev, { type: 'assistant', content: cleanAnswer }])
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -68,6 +75,10 @@ export default function ChatPage() {
       e.preventDefault()
       askAI()
     }
+  }
+
+  const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value)
   }
 
   return (
@@ -151,7 +162,7 @@ export default function ChatPage() {
               <div className="flex gap-2 flex-shrink-0">
                 <Input
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  onChange={handleMessageChange}
                   onKeyPress={handleKeyPress}
                   placeholder="Ask about coffee, menu, hours..."
                   className="flex-1"

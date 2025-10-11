@@ -43,8 +43,27 @@ export const coffeeShopContent = `
 - **Bagels**: $2.50 - Plain, everything, or sesame
 - **Scones**: $3.25 - Plain, cranberry, or blueberry
 - **Cookies**: $2.00 - Chocolate chip, oatmeal, or sugar
-- **Sandwiches**: $7.50 - Turkey, ham, or veggie
-- **Salads**: $8.00 - Caesar, garden, or quinoa
+
+### Sandwiches & Meals (All include choice of side)
+- **Turkey Club**: $7.50 - Turkey, bacon, lettuce, tomato, mayo on sourdough
+- **Ham & Swiss**: $7.50 - Ham, Swiss cheese, lettuce, tomato, mustard on rye
+- **Chicken Caesar Wrap**: $7.50 - Grilled chicken, romaine, parmesan, caesar dressing
+- **BLT**: $6.50 - Bacon, lettuce, tomato, mayo on toasted bread
+- **Breakfast Sandwich**: $6.00 - Egg, cheese, choice of bacon or sausage on English muffin
+- **Veggie Wrap**: $6.50 - Hummus, cucumber, tomato, spinach, feta
+
+### Salads
+- **Caesar Salad**: $8.00 - Romaine, parmesan, croutons, caesar dressing
+- **Garden Salad**: $7.50 - Mixed greens, tomato, cucumber, carrots, choice of dressing
+- **Quinoa Bowl**: $8.50 - Quinoa, chickpeas, roasted vegetables, tahini dressing
+- **Chicken Salad**: $9.00 - Mixed greens, grilled chicken, cranberries, walnuts, balsamic
+
+### Budget-Friendly Combinations (Under $10)
+- **Coffee + Pastry**: $5.50-$7.00 - Any coffee drink + croissant or muffin
+- **Espresso + Bagel**: $6.00 - Espresso + bagel with cream cheese
+- **Cold Brew + Cookie**: $5.75 - Cold brew + cookie
+- **Americano + Breakfast Sandwich**: $10.00 - Americano + egg sandwich
+- **Latte + BLT**: $11.50 - Latte + BLT sandwich (slightly over budget)
 
 ### Coffee Beans (Retail)
 - **Ethiopian Yirgacheffe**: $18.00/lb - Bright citrus notes
