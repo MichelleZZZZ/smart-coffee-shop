@@ -1,65 +1,49 @@
 import Link from "next/link";
-import { gql } from "@apollo/client";
-import client from "@/lib/apollo-client";
+import contentfulClient from "@/lib/contentful-client";
 import Image from "next/image";
-import { Document } from "@contentful/rich-text-types";
 
-const GET_HOME = gql`
-  query {
-    smartCoffeeShopHomePageCollection(limit: 1) {
-      items {
-        heroImage {
-          url
-        }
-        title
-        subtitle
-        callToActionsCollection {
-          items {
-            title
-            icon {
-              url
-              title
-            }
-            content {
-              json
-            }
-            
-          }
-        }
+// Contentful REST API types
+type ContentfulAsset = {
+  sys: {
+    id: string
+  }
+  fields: {
+    title?: string
+    file: {
+      url: string
+      contentType: string
+    }
+  }
+}
+
+type ContentfulEntry = {
+  sys: {
+    id: string
+    contentType: {
+      sys: {
+        id: string
       }
     }
   }
-`
+  fields: Record<string, unknown>
+}
 
 type HomePageData = {
-  heroImage?: {
-    url: string
-  }
+  heroImage?: ContentfulAsset
   title: string
   subtitle: string
-  callToActionsCollection: {
-    items: CallToAction[]
-  }
+  callToActions?: ContentfulEntry[]
 }
 
 type CallToAction = {
   title?: string
-  icon?: {
-    url: string
-    title?: string
-  }
+  icon?: ContentfulAsset
   content?: {
-    json: Document
+    content: unknown[]
+    data: Record<string, unknown>
+    nodeType: string
   }
-  link?: {
-    url?: string
-  }
-}
-
-type QueryResponse = {
-  smartCoffeeShopHomePageCollection: {
-    items: HomePageData[]
-  }
+  link?: ContentfulEntry
 }
 
 // Helper function to check if URL is a video file
@@ -69,16 +53,25 @@ function isVideoFile(url: string): boolean {
   return videoExtensions.some(ext => lowerUrl.includes(ext))
 }
 
+// Helper function to fix protocol-relative URLs
+function fixProtocolRelativeUrl(url: string): string {
+  if (url.startsWith('//')) {
+    return `https:${url}`
+  }
+  return url
+}
+
 // Helper function to render RichText content
-function renderRichTextContent(content: Document): string {
+function renderRichTextContent(content: Record<string, unknown>): string {
   if (!content || !content.content) return ''
   
   try {
-    return content.content
-      .map((node) => {
-        if (node.nodeType === 'paragraph' && 'content' in node) {
-          const paragraphNode = node as { content?: Array<{ value?: string }> }
-          return paragraphNode.content?.map((textNode) => textNode.value || '').join('') || ''
+    return (content.content as Array<Record<string, unknown>>)
+      .map((node: Record<string, unknown>) => {
+        if (node.nodeType === 'paragraph' && node.content) {
+          return (node.content as Array<Record<string, unknown>>)
+            .map((textNode: Record<string, unknown>) => textNode.value || '')
+            .join('')
         }
         return ''
       })
@@ -90,9 +83,24 @@ function renderRichTextContent(content: Document): string {
   }
 }
 
+
 export default async function HomePage() {
-  const result = await client.query<QueryResponse>({ query: GET_HOME })
-  const homeData = result.data?.smartCoffeeShopHomePageCollection?.items[0]
+  // Get home page data using REST API
+  const homePageEntries = await contentfulClient.getEntries({
+    content_type: 'smartCoffeeShopHomePage',
+    limit: 1
+  })
+  
+  const homeData = homePageEntries.items[0]?.fields as HomePageData
+  
+  // Get call to actions if they exist
+  let callToActions: CallToAction[] = []
+  if (homeData.callToActions) {
+    const ctaEntries = await contentfulClient.getEntries({
+      'sys.id[in]': homeData.callToActions.map(cta => cta.sys.id)
+    })
+    callToActions = ctaEntries.items.map(item => item.fields) as CallToAction[]
+  }
 
   return (
     <div className="min-h-screen">
@@ -101,26 +109,29 @@ export default async function HomePage() {
         {/* Background Media */}
         <div className="absolute inset-0 z-0">
           {homeData?.heroImage ? (
-            isVideoFile(homeData.heroImage.url) ? (
-              <video
-                autoPlay
-                muted
-                loop={false}
-                playsInline
-                className="w-full h-full object-cover animate-fade-in"
-              >
-                <source src={homeData.heroImage.url} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <Image
-                src={homeData.heroImage.url}
-                alt="Coffee hero image"
-                fill
-                className="object-cover"
-                priority
-              />
-            )
+            (() => {
+              const imageUrl = fixProtocolRelativeUrl(homeData.heroImage.fields.file.url)
+              return isVideoFile(imageUrl) ? (
+                <video
+                  autoPlay
+                  muted
+                  loop={false}
+                  playsInline
+                  className="w-full h-full object-cover animate-fade-in"
+                >
+                  <source src={imageUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <Image
+                  src={imageUrl}
+                  alt="Coffee hero image"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              )
+            })()
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-amber-900 via-amber-800 to-amber-700"></div>
           )}
@@ -153,39 +164,62 @@ export default async function HomePage() {
       </section>
 
       {/* Call to Actions Section */}
-      {homeData?.callToActionsCollection?.items && homeData.callToActionsCollection.items.length > 0 && (
+      {callToActions && callToActions.length > 0 && (
         <section className="py-20 bg-gray-50">
           <div className="max-w-6xl mx-auto px-8">
             <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
               Why Choose Smart Coffee Shop?
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
-              {homeData.callToActionsCollection.items.map((cta, index) => (
-                <div key={index} className="text-center p-6">
-                  <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    {cta.icon?.url ? (
-                      <Image
-                        src={cta.icon.url}
-                        alt={cta.title || 'Icon'}
-                        width={32}
-                        height={32}
-                        className="w-8 h-8"
-                      />
-                    ) : (
-                      <span className="text-2xl">☕</span>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">{cta.title || 'Call to Action'}</h3>
-                  <p className="text-gray-600 mb-4">
-                    {cta.content?.json ? renderRichTextContent(cta.content.json) : 'No content available'}
-                  </p>
-                  {cta.link?.url && (
+              {callToActions.map((cta, index) => (
+                <div key={index}>
+                  {cta.link ? (
                     <Link 
-                      href={cta.link.url}
-                      className="inline-block bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
+                      href={`/${cta.link.fields.slug || '#'}`}
+                      className="block text-center p-6 rounded-lg hover:bg-white hover:shadow-lg transition-all duration-300 cursor-pointer group"
                     >
-                      Learn More
+                      <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-amber-200 transition-colors duration-300">
+                        {cta.icon?.fields?.file?.url ? (
+                          <Image
+                            src={fixProtocolRelativeUrl(cta.icon.fields.file.url)}
+                            alt={cta.title || 'Icon'}
+                            width={32}
+                            height={32}
+                            className="w-8 h-8"
+                          />
+                        ) : (
+                          <span className="text-2xl">☕</span>
+                        )}
+                      </div>
+                      <h3 className="text-xl font-semibold mb-3 group-hover:text-amber-700 transition-colors duration-300">
+                        {cta.title || 'Call to Action'}
+                      </h3>
+                      <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
+                        {cta.content ? renderRichTextContent(cta.content) : 'No content available'}
+                      </p>
                     </Link>
+                  ) : (
+                    <div className="text-center p-6">
+                      <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        {cta.icon?.fields?.file?.url ? (
+                          <Image
+                            src={fixProtocolRelativeUrl(cta.icon.fields.file.url)}
+                            alt={cta.title || 'Icon'}
+                            width={32}
+                            height={32}
+                            className="w-8 h-8"
+                          />
+                        ) : (
+                          <span className="text-2xl">☕</span>
+                        )}
+                      </div>
+                      <h3 className="text-xl font-semibold mb-3">
+                        {cta.title || 'Call to Action'}
+                      </h3>
+                      <p className="text-gray-600">
+                        {cta.content ? renderRichTextContent(cta.content) : 'No content available'}
+                      </p>
+                    </div>
                   )}
                 </div>
               ))}
