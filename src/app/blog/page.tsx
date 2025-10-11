@@ -41,6 +41,7 @@ type QueryResponse = {
 export default async function BlogPage() {
   const result = await client.query<QueryResponse>({ query: GET_POSTS })
   const posts = result.data?.blogPostCollection?.items ?? []
+  
 
   return (
     <div className="min-h-screen bg-gray-50">

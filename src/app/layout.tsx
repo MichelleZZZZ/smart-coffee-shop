@@ -13,9 +13,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Smart Coffee Hub",
-  description: "Discover premium coffee products and expert brewing techniques",
+export const metadata = {
+  title: "Coffee Shop | Home",
+  description: "Your local artisan coffee, freshly roasted and brewed daily.",
+  openGraph: {
+    title: "Coffee Shop",
+    description: "Discover our coffee, stories, and sustainable sourcing.",
+    url: "https://your-vercel-app.vercel.app",
+    siteName: "Coffee Shop",
+    images: [
+      {
+        url: "https://your-vercel-app.vercel.app/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Coffee beans and espresso",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

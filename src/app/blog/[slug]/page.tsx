@@ -5,6 +5,7 @@ import { Document } from "@contentful/rich-text-types"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, Calendar, User } from "lucide-react"
+import type { Metadata } from "next"
 
 const GET_POST_BY_SLUG = gql`
   query GetPostBySlug($slug: String!) {
@@ -12,6 +13,7 @@ const GET_POST_BY_SLUG = gql`
       items {
         title
         publishDate
+        excerpt
         body {
           json
         }
@@ -27,6 +29,7 @@ const GET_POST_BY_SLUG = gql`
 type BlogPost = {
   title: string
   publishDate: string
+  excerpt?: string
   author?: string
   coverImage?: {
     url: string
@@ -41,6 +44,40 @@ type QueryResponse = {
       items: BlogPost[]
     }
   }
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const result = await client.query<QueryResponse>({ 
+    query: GET_POST_BY_SLUG, 
+    variables: { slug: params.slug } 
+  })
+  
+  const posts = result.data?.blogPostCollection?.items ?? []
+  const post = posts[0]
+
+  if (!post) {
+    return {
+      title: "Post not found | Smart Coffee Hub Blog",
+      description: "The blog post you're looking for doesn't exist.",
+    }
+  }
+
+  return {
+    title: `${post.title} | Smart Coffee Hub Blog`,
+    description: post.excerpt || "Read this story on our coffee journey.",
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: [
+        {
+          url: post.coverImage?.url || "/default-og.jpg",
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+  }
+}
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
 
