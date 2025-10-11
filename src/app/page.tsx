@@ -110,27 +110,34 @@ export default async function HomePage() {
         <div className="absolute inset-0 z-0">
           {homeData?.heroImage ? (
             (() => {
-              const imageUrl = fixProtocolRelativeUrl(homeData.heroImage.fields.file.url)
-              return isVideoFile(imageUrl) ? (
-                <video
-                  autoPlay
-                  muted
-                  loop={false}
-                  playsInline
-                  className="w-full h-full object-cover animate-fade-in"
-                >
-                  <source src={imageUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <Image
-                  src={imageUrl}
-                  alt="Coffee hero image"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              )
+              const mediaUrl = fixProtocolRelativeUrl(homeData.heroImage.fields.file.url)
+              const contentType = homeData.heroImage.fields.file.contentType
+              
+              // Check if it's a video file by content type or file extension
+              if (contentType?.startsWith('video/') || isVideoFile(mediaUrl)) {
+                return (
+                  <video
+                    autoPlay
+                    muted
+                    loop={false}
+                    playsInline
+                    className="w-full h-full object-cover animate-fade-in"
+                  >
+                    <source src={mediaUrl} type={contentType || "video/mp4"} />
+                    Your browser does not support the video tag.
+                  </video>
+                )
+              } else {
+                return (
+                  <Image
+                    src={mediaUrl}
+                    alt="Coffee hero image"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                )
+              }
             })()
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-amber-900 via-amber-800 to-amber-700"></div>
