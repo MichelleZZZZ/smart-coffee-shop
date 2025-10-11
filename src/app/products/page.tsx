@@ -49,11 +49,9 @@ export default async function ProductsPage() {
     
     // Check if there were any GraphQL errors
     if (result.error) {
-      console.warn('GraphQL Error:', result.error)
       hasErrors = true
     }
   } catch (error) {
-    console.error('Query Error:', error)
     hasErrors = true
   }
 
