@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { getCoffeeShopContext } from '@/lib/coffee-shop-content'
+import { findContentMatch, extractContentInfo } from '@/lib/content-matcher'
 
 export async function POST(req: Request) {
   try {
@@ -18,6 +19,8 @@ export async function POST(req: Request) {
       }, { status: 500 })
     }
     
+    // First, check if the user's question matches specific products or blog posts
+    const contentMatch = await findContentMatch(message)
     // Get the coffee shop content as context
     const coffeeShopContext = getCoffeeShopContext()
     
@@ -33,11 +36,41 @@ export async function POST(req: Request) {
       }
     })
     
-    const prompt = `You are a friendly and knowledgeable coffee shop assistant for "Smart Coffee Hub". 
+    let prompt = `You are a friendly and knowledgeable coffee shop assistant for "Smart Coffee Hub". 
 
 Use the following information about our coffee shop to answer customer questions accurately and helpfully:
 
-${coffeeShopContext}
+${coffeeShopContext}`
+
+    // Add specific content if we found a match
+    if (contentMatch.type === 'product' && contentMatch.item) {
+      const product = contentMatch.item as any
+      const productInfo = extractContentInfo(product.description)
+      prompt += `
+
+SPECIFIC PRODUCT INFORMATION:
+- **Product Name**: ${product.name}
+- **Category**: ${product.category}
+- **Description**: ${productInfo}
+- **Slug**: ${product.slug}
+
+The customer's question seems to be about this specific product. Please provide detailed information about this product and suggest they can learn more by visiting the product page.`
+    } else if (contentMatch.type === 'blog' && contentMatch.item) {
+      const blogPost = contentMatch.item as any
+      const blogContent = extractContentInfo(blogPost.body)
+      prompt += `
+
+SPECIFIC BLOG POST INFORMATION:
+- **Title**: ${blogPost.title}
+- **Excerpt**: ${blogPost.excerpt || 'No excerpt available'}
+- **Category**: ${blogPost.category || 'General'}
+- **Content**: ${blogContent.substring(0, 500)}...
+- **Slug**: ${blogPost.slug}
+
+The customer's question seems to be related to this blog post. Please provide relevant information from this post and suggest they can read the full article.`
+    }
+
+    prompt += `
 
 Customer Question: ${message}
 
@@ -53,7 +86,8 @@ Instructions:
   - Use *italics* for emphasis
   - Use bullet points (-) for lists of items, prices, or features
   - Use numbered lists (1.) for step-by-step instructions
-  - Use `code` formatting for specific terms like WiFi passwords
+  - Use code formatting for specific terms like WiFi passwords
+- If you found a specific product or blog post match, mention it and provide a relative link using the format: [link text](/products/slug) for products or [link text](/blog/slug) for blog posts
 
 Please provide a helpful response to the customer's question:`
     

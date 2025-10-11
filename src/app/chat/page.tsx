@@ -138,6 +138,16 @@ export default function ChatPage() {
                                 h3: ({ children }) => <h3 className="text-sm font-bold mb-1">{children}</h3>,
                                 code: ({ children }) => <code className="bg-gray-300 px-1 py-0.5 rounded text-xs">{children}</code>,
                                 blockquote: ({ children }) => <blockquote className="border-l-2 border-gray-400 pl-2 italic">{children}</blockquote>,
+                                a: ({ href, children }) => (
+                                  <a 
+                                    href={href} 
+                                    className="text-amber-600 hover:text-amber-700 underline font-medium"
+                                    target={href?.startsWith('http') ? '_blank' : undefined}
+                                    rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                  >
+                                    {children}
+                                  </a>
+                                ),
                               }}
                             >
                               {msg.content}
