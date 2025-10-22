@@ -1,20 +1,40 @@
 import { render, screen } from '@testing-library/react';
 import ProductList from '../app/products/productList';
-import { BLOCKS } from '@contentful/rich-text-types';
 import '@testing-library/jest-dom';
 
-const mockProducts = [
+// Define proper types for the mock data
+type MockRichTextNode = {
+  nodeType: string;
+  data: Record<string, unknown>;
+  content?: MockRichTextNode[];
+  value?: string;
+  marks?: unknown[];
+};
+
+type MockProduct = {
+  name: string;
+  slug: string;
+  category: string;
+  description: {
+    json: MockRichTextNode;
+  };
+  image?: {
+    url: string;
+  };
+};
+
+const mockProducts: MockProduct[] = [
   {
     name: 'Espresso Beans',
     slug: 'espresso-beans',
     category: 'beans',
     description: {
       json: {
-        nodeType: BLOCKS.DOCUMENT as any,
+        nodeType: 'document',
         data: {},
         content: [
           {
-            nodeType: BLOCKS.PARAGRAPH as any,
+            nodeType: 'paragraph',
             data: {},
             content: [
               {
@@ -38,11 +58,11 @@ const mockProducts = [
     category: 'drinks',
     description: {
       json: {
-        nodeType: BLOCKS.DOCUMENT as any,
+        nodeType: 'document',
         data: {},
         content: [
           {
-            nodeType: BLOCKS.PARAGRAPH as any,
+            nodeType: 'paragraph',
             data: {},
             content: [
               {
@@ -63,13 +83,13 @@ const mockProducts = [
 ];
 
 test('renders product names correctly', () => {
-  render(<ProductList products={mockProducts as any} />);
+  render(<ProductList products={mockProducts as unknown as Parameters<typeof ProductList>[0]['products']} />);
   expect(screen.getByText('Espresso Beans')).toBeInTheDocument();
   expect(screen.getByText('Cold Brew')).toBeInTheDocument();
 });
 
 test('renders filter buttons', () => {
-  render(<ProductList products={mockProducts as any} />);
+  render(<ProductList products={mockProducts as unknown as Parameters<typeof ProductList>[0]['products']} />);
   expect(screen.getByText('All')).toBeInTheDocument();
   expect(screen.getByText('Beans')).toBeInTheDocument();
   expect(screen.getByText('Drinks')).toBeInTheDocument();
@@ -77,7 +97,7 @@ test('renders filter buttons', () => {
 });
 
 test('renders product categories', () => {
-  render(<ProductList products={mockProducts as any} />);
+  render(<ProductList products={mockProducts as unknown as Parameters<typeof ProductList>[0]['products']} />);
   expect(screen.getByText('beans')).toBeInTheDocument();
   expect(screen.getByText('drinks')).toBeInTheDocument();
 });

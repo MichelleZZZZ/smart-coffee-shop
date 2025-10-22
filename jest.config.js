@@ -9,11 +9,13 @@ module.exports = {
     testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
     transform: {
       '^.+\\.(ts|tsx)$': ['ts-jest', {
-        tsconfig: {
-          jsx: 'react-jsx',
-        },
+        tsconfig: 'tsconfig.jest.json',
+      }],
+      '^.+\\.(js|jsx)$': ['babel-jest', {
+        presets: ['@babel/preset-env', '@babel/preset-react'],
       }],
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+    extensionsToTreatAsEsm: ['.ts', '.tsx'],
   };
   
