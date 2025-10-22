@@ -56,14 +56,24 @@ export default async function ProductsPage() {
   }
 
   return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold mb-6">Coffee Products</h1>
+    <main className="bg-gray-50">
+      <section className="text-amber-800 bg-white py-20">
+        <div className="max-w-6xl mx-auto px-8 text-center">
+          <h1 className="text-5xl font-bold mb-4">Coffee Products</h1>
+          <p className="text-xl text-amber-800 max-w-2xl mx-auto">
+            Discover brewing tips, coffee reviews, and expert insights from our coffee community
+          </p>
+        </div>
+      </section>
+
       {hasErrors && (
-        <div className="mb-4 p-4 bg-yellow-100 text-yellow-800 rounded">
+        <div className="max-w-6xl mb-4 p-4 bg-yellow-100 text-yellow-800 rounded">
           Some product data may be incomplete due to missing assets in Contentful.
         </div>
       )}
-      <ProductList products={products} />
+      <div className="max-w-6xl mx-auto px-8 ">
+        <ProductList products={products} />
+      </div>
     </main>
   )
 }

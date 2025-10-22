@@ -83,10 +83,10 @@ export default function ChatPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <section className="bg-gradient-to-r from-amber-900 to-amber-700 text-white py-12">
+      <section className="py-12 bg-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">☕ Coffee Assistant</h1>
-          <p className="text-xl text-amber-100">
+          <h1 className="text-4xl font-bold mb-4 text-amber-800">☕ Coffee Assistant</h1>
+          <p className="text-xl text-amber-800">
             Ask me anything about coffee, our menu, or store hours!
           </p>
         </div>
@@ -95,7 +95,7 @@ export default function ChatPage() {
       {/* Chat Interface */}
       <section className="py-8">
         <div className="max-w-4xl mx-auto px-8">
-          <Card className="min-h-[500px] max-h-[600px] flex flex-col">
+          <Card className="min-h-[500px] max-h-[600px] flex flex-col pt-6">
             <CardHeader className="flex-shrink-0">
               <CardTitle>Chat with our Coffee Assistant</CardTitle>
             </CardHeader>

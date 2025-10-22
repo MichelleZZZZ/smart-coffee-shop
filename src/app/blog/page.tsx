@@ -46,10 +46,10 @@ export default async function BlogPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Blog Header */}
-      <section className="bg-gradient-to-r from-amber-900 to-amber-700 text-white py-20">
+      <section className="text-amber-800 bg-white py-20">
         <div className="max-w-6xl mx-auto px-8 text-center">
           <h1 className="text-5xl font-bold mb-4">Coffee Blog</h1>
-          <p className="text-xl text-amber-100 max-w-2xl mx-auto">
+          <p className="text-xl text-amber-800 max-w-2xl mx-auto">
             Discover brewing tips, coffee reviews, and expert insights from our coffee community
           </p>
         </div>
@@ -67,9 +67,9 @@ export default async function BlogPage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {posts.map((post) => (
                 <Link key={post.slug} href={`/blog/${post.slug}`}>
-                  <Card className="h-full hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+                  <Card className="h-full hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-0 rounded-none">
                     {post.coverImage && (
-                      <div className="relative h-48 w-full overflow-hidden rounded-t-lg">
+                      <div className="relative h-48 w-full overflow-hidden">
                         <Image
                           src={post.coverImage.url}
                           alt={post.title}

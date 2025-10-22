@@ -28,7 +28,7 @@ export default function ProductList({ products }: { products: Product[] }) {
   return (
     <div>
       {/* Filters */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 pt-6">
         {["all", "beans", "drinks", "equipment"].map((cat) => (
           <Button
             key={cat}
@@ -41,17 +41,17 @@ export default function ProductList({ products }: { products: Product[] }) {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {filtered.map((product) => (
           <Link href={`/products/${product.slug}`} key={product.slug}>
-            <Card key={product.slug} className="hover:shadow-lg transition">
+            <Card key={product.slug} className="hover:shadow-lg transition border-0 rounded-none">
               {product.image && (
                 <div className="relative w-full h-48">
                   <Image
                     src={product.image.url}
                     alt={product.name}
                     fill
-                    className="object-cover rounded-t-lg"
+                    className="object-cover"
                   />
                 </div>
               )}
